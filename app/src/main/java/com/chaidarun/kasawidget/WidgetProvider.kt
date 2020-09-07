@@ -84,7 +84,7 @@ class WidgetProvider : AppWidgetProvider() {
               if (isOn) R.drawable.ic_power_on else R.drawable.ic_power_off)
             setOnClickPendingIntent(R.id.toggle,
               PendingIntent.getBroadcast(ctx,
-                0,
+                appWidgetId,
                 Intent(ctx, WidgetProvider::class.java).apply {
                   action = "TOGGLE"
                   putExtra("APP_WIDGET_ID", appWidgetId)
@@ -95,7 +95,7 @@ class WidgetProvider : AppWidgetProvider() {
             setTextViewText(R.id.widget_alias, alias ?: "")
             setOnClickPendingIntent(R.id.widget_alias,
               PendingIntent.getActivity(ctx,
-                0,
+                appWidgetId,
                 Intent(ctx, ConfigActivity::class.java).apply {
                   putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 },
