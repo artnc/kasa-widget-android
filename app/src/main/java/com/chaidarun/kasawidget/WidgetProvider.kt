@@ -32,8 +32,9 @@ class WidgetProvider : AppWidgetProvider() {
   override fun onReceive(context: Context, intent: Intent) {
     super.onReceive(context, intent)
     if (intent.action == "TOGGLE") {
-      val appWidgetId = intent.getIntExtra("APP_WIDGET_ID", -1)
-      if (appWidgetId != -1) {
+      val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+        AppWidgetManager.INVALID_APPWIDGET_ID)
+      if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
         ToggleTask().execute(ToggleTask.Params(context, appWidgetId))
       }
     }
@@ -87,7 +88,7 @@ class WidgetProvider : AppWidgetProvider() {
                 appWidgetId,
                 Intent(ctx, WidgetProvider::class.java).apply {
                   action = "TOGGLE"
-                  putExtra("APP_WIDGET_ID", appWidgetId)
+                  putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 },
                 0))
 
