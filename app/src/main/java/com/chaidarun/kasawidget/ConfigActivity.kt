@@ -17,7 +17,15 @@ class ConfigActivity : AppCompatActivity() {
     val ctx = applicationContext
 
     // Get app widget ID
-    val appWidgetId = intent?.extras?.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) ?: -1
+    val appWidgetId = intent?.extras?.getInt(
+      AppWidgetManager.EXTRA_APPWIDGET_ID,
+      AppWidgetManager.INVALID_APPWIDGET_ID
+    ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
+    AppLog.d("Starting ConfigActivity for widget ID:", appWidgetId)
+    if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+      Toast.makeText(ctx, "Invalid widget ID", Toast.LENGTH_LONG).show()
+      finish()
+    }
 
     // Set result as "canceled" in case user backs out
     // https://developer.android.com/guide/topics/appwidgets#UpdatingFromTheConfiguration
