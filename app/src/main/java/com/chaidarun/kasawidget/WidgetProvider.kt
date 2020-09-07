@@ -15,8 +15,17 @@ class WidgetProvider : AppWidgetProvider() {
     appWidgetIds: IntArray,
   ) {
     appWidgetIds.forEach {
-      updateAppWidget(context, appWidgetManager, it)
+      render(context, appWidgetManager, it)
     }
+  }
+
+  override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+    super.onDeleted(context, appWidgetIds)
+    val state = StateManager.get(context)
+    val togglers = state.getJSONObject("togglers")
+    AppLog.d("Widget IDs to delete:", appWidgetIds.joinToString(",") { "$it" })
+    appWidgetIds.forEach { togglers.remove("$it") }
+    StateManager.set(context, state)
   }
 
   override fun onReceive(context: Context, intent: Intent) {
@@ -43,16 +52,12 @@ class WidgetProvider : AppWidgetProvider() {
         state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
 
       Api.toggle(email, password, alias)
-      updateAppWidget(ctx, AppWidgetManager.getInstance(ctx), appWidgetId)
+      render(ctx, AppWidgetManager.getInstance(ctx), appWidgetId)
     }
   }
 
   companion object {
-    fun updateAppWidget(
-      ctx: Context,
-      appWidgetManager: AppWidgetManager,
-      appWidgetId: Int,
-    ) {
+    fun render(ctx: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
       RefreshTask().execute(RefreshTask.Params(ctx, appWidgetManager, appWidgetId))
     }
 
@@ -65,14 +70,12 @@ class WidgetProvider : AppWidgetProvider() {
 
       override fun doInBackground(vararg p0: Params) {
         val (ctx, appWidgetManager, appWidgetId) = p0[0]
+        val state = StateManager.get(ctx)
+        AppLog.d("State to render:", state)
+        val alias = state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
+        val isOn = Api.getState(state.getString("email"), state.getString("password"), alias) == 1
         appWidgetManager.updateAppWidget(appWidgetId,
           RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
-            val state = StateManager.get(ctx)
-            val alias =
-              state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
-            val isOn =
-              Api.getState(state.getString("email"), state.getString("password"), alias) == 1
-
             setTextViewText(R.id.widget_alias, alias)
             setTextViewText(R.id.toggle, if (isOn) "ON" else "OFF")
             setOnClickPendingIntent(R.id.widget_alias,
