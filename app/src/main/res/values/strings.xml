@@ -4,4 +4,5 @@
     <string name="password_hint">Kasa account password</string>
     <string name="alias_hint">Device name</string>
     <string name="save">Save widget options</string>
+    <string name="power_icon">Power icon</string>
 </resources>
