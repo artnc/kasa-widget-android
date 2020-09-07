@@ -8,19 +8,25 @@
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Kasa account email address" />
+        android:hint="Kasa account email address"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Kasa account password" />
+        android:hint="Kasa account password"
+        android:importantForAutofill="no"
+        android:inputType="textVisiblePassword" />
 
     <EditText
         android:id="@+id/alias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Device name" />
+        android:hint="Device name"
+        android:importantForAutofill="no"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/save"
