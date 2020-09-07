@@ -8,7 +8,7 @@
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Kasa account email address"
+        android:hint="@string/email_hint"
         android:importantForAutofill="no"
         android:inputType="textEmailAddress" />
 
@@ -16,7 +16,7 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Kasa account password"
+        android:hint="@string/password_hint"
         android:importantForAutofill="no"
         android:inputType="textVisiblePassword" />
 
@@ -24,7 +24,7 @@
         android:id="@+id/alias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Device name"
+        android:hint="@string/alias_hint"
         android:importantForAutofill="no"
         android:inputType="text" />
 
@@ -32,5 +32,5 @@
         android:id="@+id/save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save widget options" />
+        android:text="@string/save" />
 </LinearLayout>

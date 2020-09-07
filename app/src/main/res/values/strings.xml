@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Kasa Widget</string>
+    <string name="email_hint">Kasa account email address</string>
+    <string name="password_hint">Kasa account password</string>
+    <string name="alias_hint">Device name</string>
+    <string name="save">Save widget options</string>
 </resources>
