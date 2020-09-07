@@ -35,6 +35,7 @@ class WidgetProvider : AppWidgetProvider() {
       TOGGLE_INTENT_ACTION -> {
         val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
           AppWidgetManager.INVALID_APPWIDGET_ID)
+        AppLog.d("Toggling widget:", appWidgetId)
         when (appWidgetId) {
           AppWidgetManager.INVALID_APPWIDGET_ID -> AppLog.e("Invalid widget ID")
           else -> ToggleTask().execute(ToggleTask.Params(context, appWidgetId))
