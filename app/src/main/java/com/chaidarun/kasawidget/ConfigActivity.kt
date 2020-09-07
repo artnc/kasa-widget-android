@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import org.json.JSONObject
 
 class ConfigActivity : AppCompatActivity() {
@@ -43,6 +44,8 @@ class ConfigActivity : AppCompatActivity() {
           ?: ""
       )
     }
+    findViewById<AppCompatTextView>(R.id.about).text =
+      ctx.getString(R.string.about, BuildConfig.VERSION_NAME)
 
     // Handle form submission
     findViewById<Button>(R.id.save).setOnClickListener {
