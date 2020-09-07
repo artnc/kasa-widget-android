@@ -53,19 +53,19 @@ class WidgetProvider : AppWidgetProvider() {
         state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
 
       Api.toggle(email, password, alias)
-      render(ctx, AppWidgetManager.getInstance(ctx), appWidgetId)
+      render(ctx, null, appWidgetId)
     }
   }
 
   companion object {
-    fun render(ctx: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    fun render(ctx: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int) {
       RenderTask().execute(RenderTask.Params(ctx, appWidgetManager, appWidgetId))
     }
 
     private class RenderTask : AsyncTask<RenderTask.Params, Void, Unit>() {
       data class Params(
         val ctx: Context,
-        val appWidgetManager: AppWidgetManager,
+        val appWidgetManager: AppWidgetManager?,
         val appWidgetId: Int,
       )
 
@@ -77,7 +77,7 @@ class WidgetProvider : AppWidgetProvider() {
           state.getJSONObject("togglers").optJSONObject("$appWidgetId")?.getString("alias")
         val isOn = alias != null &&
             Api.getState(state.getString("email"), state.getString("password"), alias) == 1
-        appWidgetManager.updateAppWidget(appWidgetId,
+        (appWidgetManager ?: AppWidgetManager.getInstance(ctx)).updateAppWidget(appWidgetId,
           RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
             // Draw icon
             setImageViewResource(R.id.toggle,
