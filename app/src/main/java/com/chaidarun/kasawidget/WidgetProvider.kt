@@ -76,17 +76,6 @@ class WidgetProvider : AppWidgetProvider() {
         val isOn = Api.getState(state.getString("email"), state.getString("password"), alias) == 1
         appWidgetManager.updateAppWidget(appWidgetId,
           RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
-            // Draw alias
-            setTextViewText(R.id.widget_alias, alias)
-            setOnClickPendingIntent(R.id.widget_alias,
-              PendingIntent.getActivity(ctx,
-                0,
-                Intent(ctx, ConfigActivity::class.java).apply {
-                  putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                },
-                0)
-            )
-
             // Draw icon
             setImageViewResource(R.id.toggle,
               if (isOn) R.drawable.ic_power_on else R.drawable.ic_power_off)
@@ -98,6 +87,17 @@ class WidgetProvider : AppWidgetProvider() {
                   putExtra("APP_WIDGET_ID", appWidgetId)
                 },
                 0))
+
+            // Draw alias
+            setTextViewText(R.id.widget_alias, alias)
+            setOnClickPendingIntent(R.id.widget_alias,
+              PendingIntent.getActivity(ctx,
+                0,
+                Intent(ctx, ConfigActivity::class.java).apply {
+                  putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                },
+                0)
+            )
           })
       }
     }

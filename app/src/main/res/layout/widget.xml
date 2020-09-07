@@ -9,20 +9,22 @@
         android:background="@android:color/black"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/widget_alias"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@android:color/white"
-            android:textSize="12sp" />
-
         <ImageView
             android:id="@+id/toggle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/widget_alias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingVertical="5dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
