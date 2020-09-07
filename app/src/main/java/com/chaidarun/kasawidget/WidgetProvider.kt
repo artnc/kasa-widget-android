@@ -72,8 +72,10 @@ class WidgetProvider : AppWidgetProvider() {
         val (ctx, appWidgetManager, appWidgetId) = p0[0]
         val state = StateManager.get(ctx)
         AppLog.d("State to render:", state)
-        val alias = state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
-        val isOn = Api.getState(state.getString("email"), state.getString("password"), alias) == 1
+        val alias =
+          state.getJSONObject("togglers").optJSONObject("$appWidgetId")?.getString("alias")
+        val isOn = alias != null &&
+            Api.getState(state.getString("email"), state.getString("password"), alias) == 1
         appWidgetManager.updateAppWidget(appWidgetId,
           RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
             // Draw icon
@@ -89,7 +91,7 @@ class WidgetProvider : AppWidgetProvider() {
                 0))
 
             // Draw alias
-            setTextViewText(R.id.widget_alias, alias)
+            setTextViewText(R.id.widget_alias, alias ?: "")
             setOnClickPendingIntent(R.id.widget_alias,
               PendingIntent.getActivity(ctx,
                 0,
