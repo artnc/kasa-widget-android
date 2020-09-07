@@ -14,6 +14,7 @@ class WidgetProvider : AppWidgetProvider() {
     appWidgetManager: AppWidgetManager,
     appWidgetIds: IntArray,
   ) {
+    AppLog.d("Updating widgets:", *appWidgetIds.toTypedArray())
     appWidgetIds.forEach {
       render(context, appWidgetManager, it)
     }
@@ -23,7 +24,7 @@ class WidgetProvider : AppWidgetProvider() {
     super.onDeleted(context, appWidgetIds)
     val state = StateManager.get(context)
     val togglers = state.getJSONObject("togglers")
-    AppLog.d("Widget IDs to delete:", appWidgetIds.joinToString(",") { "$it" })
+    AppLog.d("Deleting widgets:", *appWidgetIds.toTypedArray())
     appWidgetIds.forEach { togglers.remove("$it") }
     StateManager.set(context, state)
   }
@@ -58,10 +59,10 @@ class WidgetProvider : AppWidgetProvider() {
 
   companion object {
     fun render(ctx: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-      RefreshTask().execute(RefreshTask.Params(ctx, appWidgetManager, appWidgetId))
+      RenderTask().execute(RenderTask.Params(ctx, appWidgetManager, appWidgetId))
     }
 
-    private class RefreshTask : AsyncTask<RefreshTask.Params, Void, Unit>() {
+    private class RenderTask : AsyncTask<RenderTask.Params, Void, Unit>() {
       data class Params(
         val ctx: Context,
         val appWidgetManager: AppWidgetManager,
@@ -71,7 +72,7 @@ class WidgetProvider : AppWidgetProvider() {
       override fun doInBackground(vararg p0: Params) {
         val (ctx, appWidgetManager, appWidgetId) = p0[0]
         val state = StateManager.get(ctx)
-        AppLog.d("State to render:", state)
+        AppLog.d("Rendering state:", state)
         val alias =
           state.getJSONObject("togglers").optJSONObject("$appWidgetId")?.getString("alias")
         val isOn = alias != null &&
