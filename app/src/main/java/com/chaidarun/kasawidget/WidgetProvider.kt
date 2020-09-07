@@ -31,15 +31,17 @@ class WidgetProvider : AppWidgetProvider() {
 
   override fun onReceive(context: Context, intent: Intent) {
     super.onReceive(context, intent)
-    if (intent.action == "TOGGLE") {
-      val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-        AppWidgetManager.INVALID_APPWIDGET_ID)
-      if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-        ToggleTask().execute(ToggleTask.Params(context, appWidgetId))
+    when (intent.action) {
+      TOGGLE_INTENT_ACTION -> {
+        val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+          AppWidgetManager.INVALID_APPWIDGET_ID)
+        when (appWidgetId) {
+          AppWidgetManager.INVALID_APPWIDGET_ID -> AppLog.e("Invalid widget ID")
+          else -> ToggleTask().execute(ToggleTask.Params(context, appWidgetId))
+        }
       }
     }
   }
-
 
   private class ToggleTask : AsyncTask<ToggleTask.Params, Void, Unit>() {
     data class Params(val ctx: Context, val appWidgetId: Int)
@@ -62,6 +64,8 @@ class WidgetProvider : AppWidgetProvider() {
     fun render(ctx: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int) {
       RenderTask().execute(RenderTask.Params(ctx, appWidgetManager, appWidgetId))
     }
+
+    private const val TOGGLE_INTENT_ACTION = "toggle"
 
     private class RenderTask : AsyncTask<RenderTask.Params, Void, Unit>() {
       data class Params(
@@ -87,7 +91,7 @@ class WidgetProvider : AppWidgetProvider() {
               PendingIntent.getBroadcast(ctx,
                 appWidgetId,
                 Intent(ctx, WidgetProvider::class.java).apply {
-                  action = "TOGGLE"
+                  action = TOGGLE_INTENT_ACTION
                   putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 },
                 0))
