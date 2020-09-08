@@ -5,5 +5,5 @@
     <string name="alias_hint">Device name</string>
     <string name="save">Save widget options</string>
     <string name="power_icon">Power icon</string>
-    <string name="about">Kasa Widget v%1$s by Art Chaidarun\nhttps://github.com/artnc/kasa-widget</string>
+    <string name="about">Kasa Widget v%1$s by Art Chaidarun\nhttps://github.com/artnc/kasa-widget-android</string>
 </resources>
