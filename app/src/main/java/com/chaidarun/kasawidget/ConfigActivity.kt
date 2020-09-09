@@ -58,15 +58,16 @@ class ConfigActivity : AppCompatActivity() {
       // Save fields
       state.put("email", email.text)
       state.put("password", password.text)
+      val aliasText = alias.text.toString()
       state.put(
         "togglers",
         state.getJSONObject("togglers")
-          .put("$appWidgetId", JSONObject(mapOf("alias" to alias.text.toString())))
+          .put("$appWidgetId", JSONObject(mapOf("alias" to aliasText)))
       )
       StateManager.set(ctx, state)
 
       // Update widget
-      WidgetProvider.render(ctx, null, appWidgetId, Icon.LOADING, "")
+      WidgetProvider.render(ctx, null, appWidgetId, Icon.LOADING, aliasText)
 
       // Exit activity
       setResult(Activity.RESULT_OK, resultIntent)
