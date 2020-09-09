@@ -48,22 +48,31 @@ class WidgetProvider : AppWidgetProvider() {
     data class Params(val ctx: Context, val appWidgetId: Int)
 
     override fun doInBackground(vararg p0: Params) {
-      // Read saved state
+      // Show loading state
       val (ctx, appWidgetId) = p0[0]
+      render(ctx, null, appWidgetId, isLoading = true)
+
+      // Read saved state
       val state = StateManager.get(ctx)
       val email = state.getString("email")
       val password = state.getString("password")
       val alias =
         state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
 
+      // Toggle
       Api.toggle(email, password, alias)
       render(ctx, null, appWidgetId)
     }
   }
 
   companion object {
-    fun render(ctx: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int) {
-      RenderTask().execute(RenderTask.Params(ctx, appWidgetManager, appWidgetId))
+    fun render(
+      ctx: Context,
+      appWidgetManager: AppWidgetManager?,
+      appWidgetId: Int,
+      isLoading: Boolean = false,
+    ) {
+      RenderTask().execute(RenderTask.Params(ctx, appWidgetManager, appWidgetId, isLoading))
     }
 
     private const val TOGGLE_INTENT_ACTION = "toggle"
@@ -73,21 +82,26 @@ class WidgetProvider : AppWidgetProvider() {
         val ctx: Context,
         val appWidgetManager: AppWidgetManager?,
         val appWidgetId: Int,
+        val isLoading: Boolean,
       )
 
       override fun doInBackground(vararg p0: Params) {
-        val (ctx, appWidgetManager, appWidgetId) = p0[0]
+        val (ctx, appWidgetManager, appWidgetId, isLoading) = p0[0]
         val state = StateManager.get(ctx)
         AppLog.d("Rendering state:", state)
         val alias =
           state.getJSONObject("togglers").optJSONObject("$appWidgetId")?.getString("alias")
-        val isOn = alias != null &&
-            Api.getState(state.getString("email"), state.getString("password"), alias) == 1
+        val resId = when {
+          isLoading -> R.drawable.ic_power_yellow
+          alias != null && Api.getState(state.getString("email"),
+            state.getString("password"),
+            alias) == 1 -> R.drawable.ic_power_green
+          else -> R.drawable.ic_power_gray
+        }
         (appWidgetManager ?: AppWidgetManager.getInstance(ctx)).updateAppWidget(appWidgetId,
           RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
             // Draw icon
-            setImageViewResource(R.id.toggle,
-              if (isOn) R.drawable.ic_power_on else R.drawable.ic_power_off)
+            setImageViewResource(R.id.toggle, resId)
             setOnClickPendingIntent(R.id.toggle,
               PendingIntent.getBroadcast(ctx,
                 appWidgetId,
