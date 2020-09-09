@@ -60,11 +60,11 @@ class WidgetProvider : AppWidgetProvider() {
         state.getJSONObject("togglers").getJSONObject("$appWidgetId").getString("alias")
 
       // Show loading state
-      render(ctx, null, appWidgetId, IconState.LOADING, alias)
+      render(ctx, null, appWidgetId, Icon.LOADING, alias)
 
       // Toggle
       val isOn = Api.toggle(email, password, alias)
-      render(ctx, null, appWidgetId, if (isOn) IconState.ON else IconState.OFF, alias)
+      render(ctx, null, appWidgetId, if (isOn) Icon.ON else Icon.OFF, alias)
     }
   }
 
@@ -73,13 +73,13 @@ class WidgetProvider : AppWidgetProvider() {
       ctx: Context,
       appWidgetManager: AppWidgetManager?,
       appWidgetId: Int,
-      iconState: IconState,
+      icon: Icon,
       text: String?,
     ) {
       (appWidgetManager ?: AppWidgetManager.getInstance(ctx)).updateAppWidget(appWidgetId,
         RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
           // Draw icon
-          setImageViewResource(R.id.toggle, iconState.resId)
+          setImageViewResource(R.id.toggle, icon.resId)
           setOnClickPendingIntent(R.id.toggle,
             PendingIntent.getBroadcast(ctx,
               appWidgetId,
@@ -119,9 +119,9 @@ class WidgetProvider : AppWidgetProvider() {
         val isOn =
           alias?.let { Api.isOn(state.getString("email"), state.getString("password"), it) }
         val resId = when (isOn) {
-          true -> IconState.ON
-          false -> IconState.OFF
-          null -> IconState.ERROR
+          true -> Icon.ON
+          false -> Icon.OFF
+          null -> Icon.ERROR
         }
         render(ctx, appWidgetManager, appWidgetId, resId, alias)
       }

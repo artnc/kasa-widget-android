@@ -66,7 +66,7 @@ class ConfigActivity : AppCompatActivity() {
       StateManager.set(ctx, state)
 
       // Update widget
-      WidgetProvider.render(ctx, null, appWidgetId, IconState.LOADING, "")
+      WidgetProvider.render(ctx, null, appWidgetId, Icon.LOADING, "")
 
       // Exit activity
       setResult(Activity.RESULT_OK, resultIntent)
