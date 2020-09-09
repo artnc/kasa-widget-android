@@ -67,8 +67,8 @@ class ConfigActivity : AppCompatActivity() {
       StateManager.set(ctx, state)
 
       // Update widget
-      WidgetProvider.Companion.PollTask()
-        .execute(WidgetProvider.Companion.PollTask.Params(ctx, null, state, appWidgetId))
+      PollTask()
+        .execute(PollTask.Params(ctx, null, state, appWidgetId))
 
       // Exit activity
       setResult(Activity.RESULT_OK, resultIntent)
