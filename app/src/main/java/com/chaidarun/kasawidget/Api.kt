@@ -11,12 +11,14 @@ object Api {
   fun getState(email: String, password: String, alias: String) =
     getDeviceInfo(email, password, alias)?.state
 
-  fun toggle(email: String, password: String, alias: String) {
-    val deviceInfo = getDeviceInfo(email, password, alias) ?: return
+  fun toggle(email: String, password: String, alias: String): Int {
+    val deviceInfo = getDeviceInfo(email, password, alias) ?: return 0
+    val nextState = 1 - deviceInfo.state
     rpc(deviceInfo.token,
       deviceInfo.device,
       "set_relay_state",
-      JSONObject(mapOf("state" to (1 - deviceInfo.state))))
+      JSONObject(mapOf("state" to nextState)))
+    return nextState
   }
 
   private fun getDeviceInfo(email: String, password: String, alias: String): DeviceInfo? {
