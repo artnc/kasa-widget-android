@@ -6,19 +6,18 @@ import java.util.UUID
 import org.json.JSONObject
 
 object Api {
-  private data class DeviceInfo(val token: String, val device: JSONObject, val state: Int)
+  private data class DeviceInfo(val token: String, val device: JSONObject, val isOn: Boolean)
 
-  fun getState(email: String, password: String, alias: String) =
-    getDeviceInfo(email, password, alias)?.state
+  fun isOn(email: String, password: String, alias: String) =
+    getDeviceInfo(email, password, alias)?.isOn
 
-  fun toggle(email: String, password: String, alias: String): Int {
-    val deviceInfo = getDeviceInfo(email, password, alias) ?: return 0
-    val nextState = 1 - deviceInfo.state
+  fun toggle(email: String, password: String, alias: String): Boolean {
+    val deviceInfo = getDeviceInfo(email, password, alias) ?: return false
     rpc(deviceInfo.token,
       deviceInfo.device,
       "set_relay_state",
-      JSONObject(mapOf("state" to nextState)))
-    return nextState
+      JSONObject(mapOf("state" to !deviceInfo.isOn)))
+    return !deviceInfo.isOn
   }
 
   private fun getDeviceInfo(email: String, password: String, alias: String): DeviceInfo? {
@@ -44,7 +43,7 @@ object Api {
     val device = (0 until devices.length()).map { devices.getJSONObject(it) }
       .find { it.getString("alias") == alias } ?: return null
 
-    return DeviceInfo(token, device, rpc(token, device, "get_sysinfo").getInt("relay_state"))
+    return DeviceInfo(token, device, rpc(token, device, "get_sysinfo").getInt("relay_state") == 1)
   }
 
   private fun rpc(token: String, device: JSONObject, api: String, params: JSONObject? = null) =

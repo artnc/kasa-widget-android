@@ -63,8 +63,8 @@ class WidgetProvider : AppWidgetProvider() {
       render(ctx, null, appWidgetId, IconState.LOADING, alias)
 
       // Toggle
-      val nextState = Api.toggle(email, password, alias)
-      render(ctx, null, appWidgetId, if (nextState == 1) IconState.ON else IconState.OFF, alias)
+      val isOn = Api.toggle(email, password, alias)
+      render(ctx, null, appWidgetId, if (isOn) IconState.ON else IconState.OFF, alias)
     }
   }
 
@@ -74,7 +74,7 @@ class WidgetProvider : AppWidgetProvider() {
       appWidgetManager: AppWidgetManager?,
       appWidgetId: Int,
       iconState: IconState,
-      text: String,
+      text: String?,
     ) {
       (appWidgetManager ?: AppWidgetManager.getInstance(ctx)).updateAppWidget(appWidgetId,
         RemoteViews(ctx.applicationContext.packageName, R.layout.widget).apply {
@@ -90,7 +90,7 @@ class WidgetProvider : AppWidgetProvider() {
               0))
 
           // Draw alias
-          setTextViewText(R.id.widget_alias, text)
+          setTextViewText(R.id.widget_alias, text ?: "")
           setOnClickPendingIntent(R.id.widget_alias,
             PendingIntent.getActivity(ctx,
               appWidgetId,
@@ -116,14 +116,14 @@ class WidgetProvider : AppWidgetProvider() {
         val (ctx, appWidgetManager, state, appWidgetId) = p0[0]
         val alias =
           state.getJSONObject("togglers").optJSONObject("$appWidgetId")?.getString("alias")
-        val resId = when {
-          alias == null -> IconState.LOADING
-          Api.getState(state.getString("email"),
-            state.getString("password"),
-            alias) == 1 -> IconState.ON
-          else -> IconState.OFF
+        val isOn =
+          alias?.let { Api.isOn(state.getString("email"), state.getString("password"), it) }
+        val resId = when (isOn) {
+          true -> IconState.ON
+          false -> IconState.OFF
+          null -> IconState.ERROR
         }
-        render(ctx, appWidgetManager, appWidgetId, resId, alias ?: "")
+        render(ctx, appWidgetManager, appWidgetId, resId, alias)
       }
     }
   }
