@@ -104,7 +104,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     private const val TOGGLE_INTENT_ACTION = "toggle"
 
-    private class PollTask : AsyncTask<PollTask.Params, Void, Unit>() {
+    class PollTask : AsyncTask<PollTask.Params, Void, Unit>() {
       data class Params(
         val ctx: Context,
         val appWidgetManager: AppWidgetManager?,
